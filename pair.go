@@ -1,4 +1,4 @@
-package gstream
+package stream
 
 type Pair[T any, U any] struct {
 	V1 T

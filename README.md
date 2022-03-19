@@ -1,4 +1,4 @@
-# gstream
+# stream
 Golang Streaming API with generics
 
 ## Requirements
@@ -9,13 +9,13 @@ Golang Streaming API with generics
 
 ```go
 ctx := context.Background()
-s, err := gstream.Collect[string, []string](
+s, err := stream.Collect[string, []string](
 	ctx,
-	gstream.Map[int, string](
-		gstream.FromSlice([]int{1, 2, 3}),
-		gstream.SimpleMapperFunc(strconv.Itoa),
+	stream.Map[int, string](
+		stream.FromSlice([]int{1, 2, 3}),
+		stream.SimpleMapperFunc(strconv.Itoa),
 	),
-	gstream.CollectorToSlice[string](),
+	stream.CollectorToSlice[string](),
 )
 require.NoError(t, err)
 require.Equal(t, []string{"1", "2", "3"}, s)

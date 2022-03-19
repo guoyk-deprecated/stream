@@ -1,4 +1,4 @@
-package gstream
+package stream
 
 func FromMap[T comparable, U any](value map[T]U) Stream[Pair[T, U]] {
 	var input []Pair[T, U]

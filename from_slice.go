@@ -1,4 +1,4 @@
-package gstream
+package stream
 
 import (
 	"context"
