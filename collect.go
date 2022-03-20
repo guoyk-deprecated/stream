@@ -17,7 +17,7 @@ func Collect[T any, U any](ctx context.Context, upstream Stream[T], first U, col
 				return
 			}
 		}
-		if output, err = collector.CollectValue(ctx, value, output); err != nil {
+		if output, err = collector(ctx, value, output); err != nil {
 			return
 		}
 	}

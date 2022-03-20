@@ -1,22 +1,3 @@
-# stream
-Generics based Golang Stream API
-
-## Requirements
-
-* Golang 1.18+
-
-## Features
-
-* Preserving types while chaining, no `interface{}`
-* `stream`, `map`, `collect` API
-* Support `context.Context`
-* Support `error` output
-
-## Example
-
-Find usernames starting with `a` of active users in `section-a` and `section-b`
-
-```go
 package main
 
 import (
@@ -40,14 +21,11 @@ func main() {
 		"section-b": {
 			{Name: "alex", Active: true},
 		},
-        "section-c": {
-            {Name: "bob", Active: true},
-        },
 	}
 
 	// build Stream[string] of sections
 	sections := stream.Literal("section-a", "section-b")
-	// build Stream[User] by query 'database'
+	// get Stream[User] by query 'database'
 	users := stream.Map(
 		sections,
 		func(ctx context.Context, section string) ([]User, error) {
@@ -55,7 +33,7 @@ func main() {
 			return database[section], nil
 		},
 	)
-	// build Stream[string] of names by filter and map User.Name
+	// get Stream[string] of names by filter and map User.Name
 	names := stream.Map(
 		users,
 		// SimpleMapper is just a wrapper to ignore ctx and error
@@ -68,7 +46,7 @@ func main() {
 		}),
 	)
 	// collect Stream[string] as []string
-	// be advised, this is where actual operations are executed
+	// remember, this is when actual operations are executed
 	result, _ := stream.Collect(
 		context.Background(),
 		names,
@@ -78,8 +56,3 @@ func main() {
 	log.Println(result)
 	// ["alex"]
 }
-```
-
-## Credits
-
-Guo Y.K., MIT License

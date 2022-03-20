@@ -12,7 +12,7 @@ func TestFromChan(t *testing.T) {
 	ch <- 1
 	ch <- 2
 	ch <- 3
-	s := FromChan[int](ch)
+	s := FromChan(ch)
 	go func() {
 		time.Sleep(time.Second)
 		close(ch)

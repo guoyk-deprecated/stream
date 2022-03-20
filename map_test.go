@@ -7,14 +7,12 @@ import (
 	"testing"
 )
 
-var countStringConverter = MapperFunc[string, int](func(ctx context.Context, input string) ([]int, error) {
-	return []int{len(input)}, nil
-})
-
 func TestMap(t *testing.T) {
 	upstream := FromSlice([]string{"a", "bb", "ccc"})
-	var s Stream[int]
-	s = Map[string, int](upstream, countStringConverter)
+
+	s := Map(upstream, func(ctx context.Context, input string) ([]int, error) {
+		return []int{len(input)}, nil
+	})
 
 	ctx := context.Background()
 

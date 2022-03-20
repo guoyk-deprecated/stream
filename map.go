@@ -19,7 +19,7 @@ retry:
 	if input, err = s.stream.Next(ctx); err != nil {
 		return
 	}
-	if s.cache, err = s.mapper.MapValue(ctx, input); err != nil {
+	if s.cache, err = s.mapper(ctx, input); err != nil {
 		return
 	}
 	if len(s.cache) == 0 {

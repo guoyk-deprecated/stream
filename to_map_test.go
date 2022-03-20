@@ -24,7 +24,7 @@ func TestToMap(t *testing.T) {
 	r, err := Collect(
 		context.Background(),
 		s,
-		nil,
+		map[int]string{},
 		ToMap[int, string](),
 	)
 	require.NoError(t, err)

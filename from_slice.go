@@ -22,3 +22,7 @@ func (s *sliceStream[T]) Next(ctx context.Context) (T, error) {
 func FromSlice[T any](value []T) Stream[T] {
 	return &sliceStream[T]{value: value}
 }
+
+func Literal[T any](value ...T) Stream[T] {
+	return FromSlice(value)
+}
