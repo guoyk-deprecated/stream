@@ -15,6 +15,7 @@ s, err := stream.Collect[string, []string](
 		stream.FromSlice([]int{1, 2, 3}),
 		stream.SimpleMapperFunc(strconv.Itoa),
 	),
+	nil,
 	stream.CollectorToSlice[string](),
 )
 require.NoError(t, err)
