@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-var countStringConverter = MapperFunc[string, int](func(ctx context.Context, input string) (int, error) {
-	return len(input), nil
+var countStringConverter = MapperFunc[string, int](func(ctx context.Context, input string) ([]int, error) {
+	return []int{len(input)}, nil
 })
 
 func TestMap(t *testing.T) {

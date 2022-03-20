@@ -3,24 +3,36 @@ package stream
 import "context"
 
 type mapStream[T any, U any] struct {
-	upstream  Stream[T]
-	converter Mapper[T, U]
+	stream Stream[T]
+	mapper Mapper[T, U]
+	cache  []U
 }
 
 func (s *mapStream[T, U]) Next(ctx context.Context) (output U, err error) {
+	if len(s.cache) != 0 {
+		output = s.cache[0]
+		s.cache = s.cache[1:]
+		return
+	}
 	var input T
-	if input, err = s.upstream.Next(ctx); err != nil {
+retry:
+	if input, err = s.stream.Next(ctx); err != nil {
 		return
 	}
-	if output, err = s.converter.MapValue(ctx, input); err != nil {
+	if s.cache, err = s.mapper.MapValue(ctx, input); err != nil {
 		return
 	}
+	if len(s.cache) == 0 {
+		goto retry
+	}
+	output = s.cache[0]
+	s.cache = s.cache[1:]
 	return
 }
 
-func Map[T any, U any](upstream Stream[T], converter Mapper[T, U]) Stream[U] {
+func Map[T any, U any](stream Stream[T], mapper Mapper[T, U]) Stream[U] {
 	return &mapStream[T, U]{
-		upstream:  upstream,
-		converter: converter,
+		stream: stream,
+		mapper: mapper,
 	}
 }
