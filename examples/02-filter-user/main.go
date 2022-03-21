@@ -26,25 +26,25 @@ func main() {
 	// build Stream[string] of sections
 	sections := stream.Literal("section-a", "section-b")
 	// get Stream[User] by query 'database'
-	users := stream.Map(
+	users := stream.Flatten(stream.Map(
 		sections,
-		func(ctx context.Context, section string) ([]User, error) {
+		func(ctx context.Context, section string) (stream.Stream[User], error) {
 			// this is just a mock, you can do actual database query here
-			return database[section], nil
+			return stream.FromSlice(database[section]), nil
 		},
-	)
+	))
 	// get Stream[string] of names by filter and map User.Name
-	names := stream.Map(
+	names := stream.Flatten(stream.Map(
 		users,
 		// SimpleMapFunc is just a wrapper to ignore ctx and error
-		stream.SimpleMapFunc(func(u User) []string {
+		stream.SimpleMapFunc(func(u User) stream.Stream[string] {
 			if u.Active && strings.HasPrefix(u.Name, "a") {
-				return []string{u.Name}
+				return stream.Literal(u.Name)
 			} else {
-				return nil
+				return stream.Noop[string]()
 			}
 		}),
-	)
+	))
 	// collect Stream[string] as []string
 	// remember, this is when actual operations are executed
 	result, _ := stream.Collect(

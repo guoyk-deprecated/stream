@@ -10,8 +10,8 @@ import (
 func TestMap(t *testing.T) {
 	upstream := FromSlice([]string{"a", "bb", "ccc"})
 
-	s := Map(upstream, func(ctx context.Context, input string) ([]int, error) {
-		return []int{len(input)}, nil
+	s := Map(upstream, func(ctx context.Context, input string) (int, error) {
+		return len(input), nil
 	})
 
 	ctx := context.Background()
