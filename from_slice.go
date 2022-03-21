@@ -28,6 +28,9 @@ func FromSlice[T any](value []T) Stream[T] {
 	if len(value) == 0 {
 		return Noop[T]()
 	}
+	if len(value) == 1 {
+		return Single(value[0])
+	}
 	return &sliceStream[T]{value: value, lock: &sync.Mutex{}}
 }
 
