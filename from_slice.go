@@ -3,13 +3,18 @@ package stream
 import (
 	"context"
 	"io"
+	"sync"
 )
 
 type sliceStream[T any] struct {
 	value []T
+	lock  sync.Locker
 }
 
 func (s *sliceStream[T]) Next(ctx context.Context) (T, error) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
 	var output T
 	if len(s.value) == 0 {
 		return output, io.EOF
@@ -20,7 +25,10 @@ func (s *sliceStream[T]) Next(ctx context.Context) (T, error) {
 }
 
 func FromSlice[T any](value []T) Stream[T] {
-	return &sliceStream[T]{value: value}
+	if len(value) == 0 {
+		return Noop[T]()
+	}
+	return &sliceStream[T]{value: value, lock: &sync.Mutex{}}
 }
 
 func Literal[T any](value ...T) Stream[T] {

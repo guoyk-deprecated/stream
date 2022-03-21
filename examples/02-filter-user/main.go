@@ -36,8 +36,8 @@ func main() {
 	// get Stream[string] of names by filter and map User.Name
 	names := stream.Map(
 		users,
-		// SimpleMapper is just a wrapper to ignore ctx and error
-		stream.SimpleMapper(func(u User) []string {
+		// SimpleMapFunc is just a wrapper to ignore ctx and error
+		stream.SimpleMapFunc(func(u User) []string {
 			if u.Active && strings.HasPrefix(u.Name, "a") {
 				return []string{u.Name}
 			} else {

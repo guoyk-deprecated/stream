@@ -9,7 +9,7 @@ import (
 func main() {
 	s := stream.Map(
 		stream.Literal("a", "bb", "ccc"),
-		stream.SimpleMapper(func(input string) []int {
+		stream.SimpleMapFunc(func(input string) []int {
 			return []int{len(input)}
 		}),
 	)
