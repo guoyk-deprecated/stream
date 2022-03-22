@@ -4,23 +4,23 @@ import (
 	"context"
 	"io"
 	"sync/atomic"
+	"unsafe"
 )
 
 type singleStram[T any] struct {
-	value T
-	done  uint32
+	value unsafe.Pointer
 }
 
-func (s *singleStram[T]) Next(ctx context.Context) (T, error) {
-	if atomic.CompareAndSwapUint32(&s.done, 0, 1) {
-		output := s.value
-		return output, nil
+func (s *singleStram[T]) Next(ctx context.Context) (value T, err error) {
+	if v := atomic.SwapPointer(&s.value, nil); v != nil {
+		value = *(*T)(v)
+		return
 	} else {
-		var value T
-		return value, io.EOF
+		err = io.EOF
+		return
 	}
 }
 
 func Single[T any](value T) Stream[T] {
-	return &singleStram[T]{value: value}
+	return &singleStram[T]{value: unsafe.Pointer(&value)}
 }
